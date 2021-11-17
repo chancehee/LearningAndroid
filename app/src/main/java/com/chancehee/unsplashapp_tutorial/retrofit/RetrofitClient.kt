@@ -1,6 +1,10 @@
 package com.chancehee.unsplashapp_tutorial.retrofit
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.widget.Toast
+import com.chancehee.unsplashapp_tutorial.App
 import com.chancehee.unsplashapp_tutorial.utils.API
 import com.chancehee.unsplashapp_tutorial.utils.Constant.TAG
 import com.chancehee.unsplashapp_tutorial.utils.isJsonArray
@@ -15,6 +19,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.Exception
 import java.util.concurrent.TimeUnit
+
 
 // object는 싱글턴이다.(메모리를 하나만 쓴다.)
 object RetrofitClient {
@@ -58,11 +63,6 @@ object RetrofitClient {
         // 위에서 설정한 로깅 인터셉터를 okhttp 클라이언트에 추가한다.
         client.addInterceptor(loggingInterceptor)
 
-        // 커넥션 타임아웃
-        client.connectTimeout(10,TimeUnit.SECONDS)
-        client.readTimeout(10,TimeUnit.SECONDS)
-        client.writeTimeout(10,TimeUnit.SECONDS)
-        client.retryOnConnectionFailure(true)
 
 
         // 기본 파라미터 인터셉터 설정
@@ -82,7 +82,17 @@ object RetrofitClient {
                     .method(originalRequest.method, originalRequest.body)
                     .build()
 
-                return chain.proceed(finalRequest)
+                //return chain.proceed(finalRequest)
+                val response = chain.proceed(finalRequest)
+
+                if(response.code != 200){
+
+                    Handler(Looper.getMainLooper()).post {
+                        Toast.makeText(App.instance, "${response.code} 에러 입니다", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+                return response
             }
 
         })
@@ -90,6 +100,11 @@ object RetrofitClient {
         // 위에서 설정한 로깅 인터셉터를 okhttp 클라이언트에 추가한다.
         client.addInterceptor(baseParameterInterceptor)
 
+        // 커넥션 타임아웃
+        client.connectTimeout(10,TimeUnit.SECONDS)
+        client.readTimeout(10,TimeUnit.SECONDS)
+        client.writeTimeout(10,TimeUnit.SECONDS)
+        client.retryOnConnectionFailure(true)
 
 
 
