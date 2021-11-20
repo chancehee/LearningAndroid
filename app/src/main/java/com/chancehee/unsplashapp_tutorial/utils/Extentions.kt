@@ -3,6 +3,8 @@ package com.chancehee.unsplashapp_tutorial.utils
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
+import java.text.SimpleDateFormat
+import java.util.*
 
 // 문자열이 제이슨 형태인지
 fun String?.isJsonObject():Boolean {
@@ -22,6 +24,11 @@ fun String?.isJsonArray() : Boolean{
     }
 }
 
+
+fun Date.toString() : String {
+    val format = SimpleDateFormat("HH:mm:ss")
+    return format.format(this)
+}
 
 
 

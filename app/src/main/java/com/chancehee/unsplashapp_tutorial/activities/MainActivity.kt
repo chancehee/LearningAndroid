@@ -1,13 +1,12 @@
-package com.chancehee.unsplashapp_tutorial
+package com.chancehee.unsplashapp_tutorial.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.chancehee.unsplashapp_tutorial.R
 import com.chancehee.unsplashapp_tutorial.databinding.ActivityMainBinding
 import com.chancehee.unsplashapp_tutorial.retrofit.RetrofitManager
 import com.chancehee.unsplashapp_tutorial.utils.Constant.TAG
@@ -96,7 +95,7 @@ class MainActivity : AppCompatActivity() {
                     RESPONSE_STATUS.OKAY -> {
                         Log.d(TAG, "api 호출 성공: ${responseDataArrayList?.size}")
 
-                        val intent = Intent(this,PhotoCollectionActivity::class.java)
+                        val intent = Intent(this, PhotoCollectionActivity::class.java)
 
                         val bundle = Bundle()
 

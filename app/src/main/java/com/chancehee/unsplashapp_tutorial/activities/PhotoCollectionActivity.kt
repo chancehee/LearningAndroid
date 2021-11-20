@@ -1,4 +1,4 @@
-package com.chancehee.unsplashapp_tutorial
+package com.chancehee.unsplashapp_tutorial.activities
 
 import android.app.SearchManager
 import android.content.Context
@@ -13,12 +13,16 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
+import com.chancehee.unsplashapp_tutorial.R
 import com.chancehee.unsplashapp_tutorial.model.Photo
+import com.chancehee.unsplashapp_tutorial.model.SearchData
 import com.chancehee.unsplashapp_tutorial.recyclerview.PhotoGridRecyclerViewAdapter
 import com.chancehee.unsplashapp_tutorial.utils.Constant.TAG
+import com.chancehee.unsplashapp_tutorial.utils.SharedPrefManager
 import kotlinx.android.synthetic.main.activity_photo_collection.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class PhotoCollectionActivity: AppCompatActivity(),
                             SearchView.OnQueryTextListener,
@@ -27,6 +31,9 @@ class PhotoCollectionActivity: AppCompatActivity(),
 {
     // 데이터
     var photoList = ArrayList<Photo>()
+
+    // 검색 기록 배열
+    private var searchHistoryList = ArrayList<SearchData>()
 
     // 어답터
     private lateinit var photoGridRecyclerViewAdapter: PhotoGridRecyclerViewAdapter
@@ -68,6 +75,13 @@ class PhotoCollectionActivity: AppCompatActivity(),
         my_photo_recycler_view.layoutManager = GridLayoutManager(this,2,GridLayoutManager.VERTICAL, false)
         my_photo_recycler_view.adapter = this.photoGridRecyclerViewAdapter
 
+        // 저장된 검색 기록 가져오기
+        this.searchHistoryList = SharedPrefManager.getSearchHistoryList() as ArrayList<SearchData>
+
+        this.searchHistoryList.forEach {
+            Log.d(TAG, "저장된 검색 기록 - it.term : ${it.term}, it.timestamp : ${it.timestamp}")
+        }
+
     } //
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -99,6 +113,7 @@ class PhotoCollectionActivity: AppCompatActivity(),
             mySearchViewEditText = this.findViewById(androidx.appcompat.R.id.search_src_text)
         }
 
+
         this.mySearchViewEditText.apply {
             this.filters = arrayOf(InputFilter.LengthFilter(12))
             this.setTextColor(Color.WHITE)
@@ -117,6 +132,13 @@ class PhotoCollectionActivity: AppCompatActivity(),
 
             //TODO:: api 호출
             //TODO:: 검색어 저장
+
+            val newSearchData = SearchData(term = query, timestamp = Date().toString())
+
+            this.searchHistoryList.add(newSearchData)
+
+            SharedPrefManager.storeSearchHistoryList(this.searchHistoryList)
+
         }
 //        this.mySearchView.setQuery("",false)
 //        this.mySearchView.clearFocus()
