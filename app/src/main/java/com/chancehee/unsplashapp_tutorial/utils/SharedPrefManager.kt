@@ -11,6 +11,38 @@ object SharedPrefManager {
     private const val SHARED_SEARCH_HISTORY = "shared_search_history"
     private const val KEY_SEARCH_HISTORY = "key_search_history"
 
+    // 검색목록이 켜졌는가 안켜졌는가(스위치버튼 on/off)
+    private const val SHARED_SEARCH_HISTORY_MODE = "shared_search_history_mode"
+    private const val KEY_SEARCH_HISTORY_MODE = "key_search_history_mode"
+
+    // 검색어 저장 모드 설정하기
+    fun setSearchHistoryMode(isActivated: Boolean){
+        Log.d(TAG, "SharedPrefManager - setSearchHistoryMode() is called / isActivated: $isActivated")
+
+        // 쉐어드 가져오기
+        val shared = App.instance.getSharedPreferences(SHARED_SEARCH_HISTORY_MODE, Context.MODE_PRIVATE)
+
+        // 쉐어드 에디터 가져오기
+        val editor = shared.edit()
+
+        editor.putBoolean(KEY_SEARCH_HISTORY_MODE, isActivated)
+
+        editor.apply()
+    }
+
+    // 검색어 저장 모드 확인하기
+    fun CheckSearchHistoryMode() : Boolean{
+
+        // 쉐어드 가져오기
+        val shared = App.instance.getSharedPreferences(SHARED_SEARCH_HISTORY_MODE, Context.MODE_PRIVATE)
+
+        val isSearchHistoryMode : Boolean = shared.getBoolean(KEY_SEARCH_HISTORY_MODE, false)
+
+        return isSearchHistoryMode
+    }
+
+
+
     // 검색 목록을 저장
     fun storeSearchHistoryList(searchHistoryList: MutableList<SearchData>){
         Log.d(TAG, "SharedPrefManager - storeSearchHistoryList() is called")
@@ -49,6 +81,24 @@ object SharedPrefManager {
         }
 
         return storedSearchHistoryList
+    }
+
+    // 검색 목록 지우기
+    fun clearSearchHistoryList(){
+        Log.d(TAG, "SharedPrefManager - clearSearchHistoryList() is called")
+
+        // 쉐어드 가져오기
+        val shared = App.instance.getSharedPreferences(SHARED_SEARCH_HISTORY, Context.MODE_PRIVATE)
+
+        // 쉐어드 에디터 가져오기
+        val editor = shared.edit()
+
+        // 해당 데이터 지우기
+        editor.clear()
+
+        // 변경 사항 적용
+        editor.apply()
+
     }
 
 }
